@@ -32,16 +32,27 @@
     - name: Install Docker Rootless
       become: no
       command: /tmp/get-docker-rootless.sh
+    - name: Setting PATH environment variable
+      lineinfile:
+        dest: ~/.bashrc
+        line: "export PATH=/usr/bin:$PATH"
+        state: present
+        create: yes
+      become_user: "{{ ansible_user }}"
 
-    - name: Execute Source File
+    - name: Setting DOCKER_HOST environment variable
+      lineinfile:
+        dest: ~/.bashrc
+        line: "export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock"
+        state: present
+        create: yes
+      become_user: "{{ ansible_user }}"
+
+    - name: Reload .bashrc file
       shell: source ~/.bashrc
       args:
         executable: /bin/bash
-      become: yes
-      become_user: etp
-      environment:
-        PATH: "/usr/bin:{{ ansible_env.PATH }}"
-        DOCKER_HOST: "unix:///run/user/{{ ansible_user_id }}/docker.sock"
+      become_user: "{{ ansible_user }}"
 
 
     - name: Start Docker Service
