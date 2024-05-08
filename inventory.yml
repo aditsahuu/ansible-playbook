@@ -2,4 +2,4 @@ all:
   hosts:
     edge:
       ansible_user: user
-      ansible_host: ip
+      ansible_host: ipaddress
